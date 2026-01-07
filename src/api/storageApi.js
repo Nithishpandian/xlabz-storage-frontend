@@ -35,7 +35,12 @@ export const deleteFileApi = (id) =>
   fetch(`${API_BASE}/delete/${id}`, { method: "DELETE" });
 
 export const downloadFileApi = async (id) => {
-  const response = await fetch(`${API_BASE}/download/${id}`);
+  const response = await fetch(`${API_BASE}/download/${id}`, {
+    method: "GET",
+    headers: {
+      Accept: "application/zip",
+    },
+  });
 
   const contentType = response.headers.get("Content-Type");
 
@@ -61,15 +66,26 @@ export const downloadFileApi = async (id) => {
 
 function getFilenameFromHeaders(headers) {
   const disposition = headers.get("Content-Disposition");
-  if (disposition) {
-    const filenameMatch = disposition.match(
-      /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/
-    );
-    if (filenameMatch && filenameMatch[1]) {
-      return decodeURIComponent(filenameMatch[1].replace(/['"]/g, ""));
+
+  if (!disposition) {
+    return "folder.zip";
+  }
+
+  const encodedMatch = disposition.match(/filename\*=UTF-8''([^;,\n]+)/i);
+  if (encodedMatch && encodedMatch[1]) {
+    try {
+      return decodeURIComponent(encodedMatch[1]);
+    } catch (e) {
+      console.error("Failed to decode filename:", e);
     }
   }
-  return "download.zip";
+
+  const regularMatch = disposition.match(/filename="?([^";\n]+)"?/i);
+  if (regularMatch && regularMatch[1]) {
+    return regularMatch[1].trim();
+  }
+
+  return "folder.zip";
 }
 
 export const moveFilesApi = (payload) =>
