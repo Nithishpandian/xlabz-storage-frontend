@@ -24,6 +24,9 @@ export const completeUploadApi = (payload) =>
 export const getFileApi = (id) =>
   fetch(`${API_BASE}/get/${id}`).then((r) => r.json());
 
+export const getThumbnailApi = (id) =>
+  fetch(`${API_BASE}/thumbnail/${id}`).then((r) => r.json());
+
 export const renameFileApi = (id, newName) =>
   fetch(`${API_BASE}/update/filename/${id}`, {
     method: "PUT",

@@ -4,6 +4,7 @@ import {
   deleteFileApi,
   renameFileApi,
   downloadFileApi,
+  getThumbnailApi,
 } from "../api/storageApi";
 
 export default function FileActions({ setMedia }) {
@@ -49,6 +50,11 @@ export default function FileActions({ setMedia }) {
         }}
       >
         Download
+      </button>
+      <button
+        onClick={async () => setMedia((await getThumbnailApi(assetId)).data)}
+      >
+        Get Thumbnail
       </button>
 
       <br />
