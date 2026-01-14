@@ -43,12 +43,13 @@ export default function UploadFile() {
       completedParts.push({ PartNumber: i + 1, ETag: etag });
     }
 
-    await completeUploadApi({
+    const result = await completeUploadApi({
       asset_id: uploadData.asset_id,
       upload_id: uploadData.upload_id,
       file_key: uploadData.file_key,
       completed_parts: completedParts,
     });
+    console.log(result);
 
     alert("Upload completed");
     setLoading(false);
@@ -58,7 +59,10 @@ export default function UploadFile() {
     <>
       <h3>Upload File</h3>
       <input type="file" onChange={(e) => setFile(e.target.files[0])} />
-      <input placeholder="Parent ID" onChange={(e) => setParentId(e.target.value)} />
+      <input
+        placeholder="Parent ID"
+        onChange={(e) => setParentId(e.target.value)}
+      />
       <button onClick={upload} disabled={loading}>
         Upload
       </button>
